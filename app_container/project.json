@@ -1,0 +1,64 @@
+{
+  "name": "app_container",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "app_container/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/rspack:rspack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "web",
+        "outputPath": "dist/app_container",
+        "index": "app_container/src/index.html",
+        "main": "app_container/src/main.ts",
+        "tsConfig": "app_container/tsconfig.app.json",
+        "rspackConfig": "app_container/rspack.config.ts",
+        "assets": ["app_container/src/favicon.ico", "app_container/src/assets"]
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production",
+          "optimization": true,
+          "sourceMap": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/rspack:module-federation-dev-server",
+      "options": {
+        "buildTarget": "app_container:build:development",
+        "port": 4200
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "buildTarget": "app_container:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "serve-static": {
+      "executor": "@nx/rspack:module-federation-static-server",
+      "defaultConfiguration": "production",
+      "options": {
+        "serveTarget": "app_container:serve"
+      },
+      "configurations": {
+        "development": {
+          "serveTarget": "app_container:serve:development"
+        },
+        "production": {
+          "serveTarget": "app_container:serve:production"
+        }
+      }
+    }
+  }
+}
